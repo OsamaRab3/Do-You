@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Do You Love Me?</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f8f9fa;
+            margin: 0;
+            overflow: hidden;
+        }
+        
+        .container {
+            text-align: center;
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+        }
+        
+        h1 {
+            color: #e91e63;
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            animation: heartbeat 1.5s infinite;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin-top: 2rem;
+        }
+        
+        button {
+            padding: 1rem 2rem;
+            font-size: 1.5rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        button:hover {
+            transform: scale(1.05);
+        }
+        
+        #yes-btn {
+            background-color: #4caf50;
+            color: white;
+            box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+        }
+        
+        #no-btn {
+            background-color: #f44336;
+            color: white;
+            box-shadow: 0 4px 8px rgba(244, 67, 54, 0.3);
+            position: relative;
+        }
+        
+        .result {
+            font-size: 2.5rem;
+            margin-top: 2rem;
+            color: #e91e63;
+            display: none;
+            animation: fadeIn 1s;
+        }
+        
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .heart {
+            position: absolute;
+            color: #e91e63;
+            font-size: 24px;
+            animation: float 3s linear forwards;
+            opacity: 0;
+        }
+
+        @keyframes float {
+            0% {
+                opacity: 0;
+                transform: translateY(0) scale(0.5);
+            }
+            10% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100vh) scale(1.5);
+            }
+        }
+        
+        #start-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        #start-btn {
+            background-color: #e91e63;
+            color: white;
+            padding: 1.5rem 3rem;
+            font-size: 2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            animation: pulse 2s infinite;
+            box-shadow: 0 0 20px rgba(233, 30, 99, 0.5);
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 20px rgba(233, 30, 99, 0.5); }
+            50% { transform: scale(1.05); box-shadow: 0 0 30px rgba(233, 30, 99, 0.7); }
+            100% { transform: scale(1); box-shadow: 0 0 20px rgba(233, 30, 99, 0.5); }
+        }
+        
+        .game-content {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="start-screen">
+        <button id="start-btn">Click to Start</button>
+    </div>
+
+    <div class="game-content">
+        <div class="container">
+            <h1>Do You Love Me?</h1>
+            <div class="button-container">
+                <button id="yes-btn">Yes</button>
+                <button id="no-btn">No</button>
+            </div>
+            <div class="result" id="result">I Knew It! I Love You Too ❤️</div>
+        </div>
+    </div>
+    
+    <audio id="background-music" loop>
+        <source src="Lady_Gaga,_Bruno_Mars_Die_With_A_Smile_Official_Music_Video.m4a" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <script>
+        const startBtn = document.getElementById('start-btn');
+        const startScreen = document.getElementById('start-screen');
+        const gameContent = document.querySelector('.game-content');
+        const yesBtn = document.getElementById('yes-btn');
+        const noBtn = document.getElementById('no-btn');
+        const result = document.getElementById('result');
+        const backgroundMusic = document.getElementById('background-music');
+        
+        startBtn.addEventListener('click', function() {
+            startScreen.style.display = 'none';
+            gameContent.style.display = 'block';
+
+            backgroundMusic.play().catch(error => {
+                console.log("Auto-play was prevented. This is a browser restriction.");
+
+            });
+        });
+     
+        function moveButton() {
+            const maxX = window.innerWidth - noBtn.clientWidth;
+            const maxY = window.innerHeight - noBtn.clientHeight;
+            
+            const randomX = Math.floor(Math.random() * maxX);
+            const randomY = Math.floor(Math.random() * maxY);
+            
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+        }
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            document.body.appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 3000);
+        }
+
+        noBtn.addEventListener('mouseover', moveButton);
+        noBtn.addEventListener('click', moveButton);
+        
+        yesBtn.addEventListener('click', function() {
+            yesBtn.style.display = 'none';
+            noBtn.style.display = 'none';
+            
+
+            result.style.display = 'block';
+
+            for (let i = 0; i < 30; i++) {
+                setTimeout(createHeart, i * 100);
+            }
+        });
+    </script>
+</body>
+</html>
